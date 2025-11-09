@@ -1,18 +1,17 @@
 package ma.emsi.sadik.tp2websadik.llm;
 
-
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.data.message.SystemMessage;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.ApplicationScoped;
 
-@Dependent
+@ApplicationScoped
 public class LlmClient {
 
-    private String systemRole;
+    // private String systemRole; // You DON'T need this field anymore
     private ChatMemory chatMemory;
     private Assistant assistant;
 
@@ -33,17 +32,21 @@ public class LlmClient {
                 .build();
     }
 
-    public void setSystemRole(String systemRole) {
-        this.systemRole = systemRole;
+    /**
+     * THIS IS THE CORRECT IMPLEMENTATION (from your professor's instructions)
+     * It clears the memory and adds the role as a SystemMessage.
+     */
+    public void setSystemRole(String roleSysteme) {
         chatMemory.clear();
-        chatMemory.add(new SystemMessage(systemRole));
+        chatMemory.add(new SystemMessage(roleSysteme));
     }
 
-    public String envoyerQuestion(String roleSysteme, String question) {
-        if (this.systemRole == null || !this.systemRole.equals(roleSysteme)) {
-            setSystemRole(roleSysteme);
-        }
+    /**
+     * THIS IS THE CORRECT IMPLEMENTATION
+     * You just send the user's question. LangChain4j handles the
+     * system role and history because it's in the chatMemory.
+     */
+    public String envoyerQuestion(String question) {
         return assistant.chat(question);
     }
 }
-

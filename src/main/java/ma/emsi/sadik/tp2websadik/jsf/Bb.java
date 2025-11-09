@@ -1,4 +1,4 @@
-package ma.emsi.sadik.tp0sadik.jsf;
+package ma.emsi.sadik.tp2websadik.jsf;
 
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -89,13 +89,17 @@ public class Bb implements Serializable {
         }
 
         try {
-            // Si première question → verrouiller le rôle
+            // Si première question → DÉFINIR LE RÔLE and verrouiller le rôle
             if (this.conversation.isEmpty()) {
+                llmClient.setSystemRole(roleSysteme); // <-- CORRECT: Call setSystemRole HERE
                 this.roleSystemeChangeable = false;
             }
 
             // Appel au LLM via le client
-            this.reponse = llmClient.envoyerQuestion(roleSysteme, question);
+            // llmClient.setSystemRole(roleSysteme); // <-- DO NOT call it here every time
+
+            // CORRECT: Assign to "this.reponse"
+            this.reponse = llmClient.envoyerQuestion(question);
 
             // Met à jour la conversation
             afficherConversation();
